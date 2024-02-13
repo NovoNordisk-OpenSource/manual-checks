@@ -10,7 +10,7 @@ inputs:
     required: true
 
 env:
-  SCRIPTS_DIR: '/home/runner/work/nn-dma/qms-manual-checks/main/scripts'
+  SCRIPTS_DIR: '/home/runner/work/_actions/nn-dma/qms-manual-checks/main/scripts'
 
 runs:
   using: 'composite'
