@@ -1,0 +1,23 @@
+name: 'QMS Manual Checks'
+description: 'Checks for manual tags in the files'
+inputs:
+  feature_files_dir:
+    description: 'Path to the files'
+    required: true
+    default: '.'
+  tag:
+    description: 'Tag to check for'
+    required: true
+
+env:
+  SCRIPTS_DIR: '/home/runner/work/nn-dma/qms-manual-checks/main/scripts'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Check for manual tags
+      run: |
+        bash $SCRIPTS_DIR/check_manual_tags.sh -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m
+      shell: bash
