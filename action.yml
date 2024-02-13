@@ -19,5 +19,5 @@ runs:
       uses: actions/checkout@v4
     - name: Check for manual tags
       run: |
-        bash $SCRIPTS_DIR/check_manual_tags.sh -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m
+        bash $SCRIPTS_DIR/qms-scripts -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m
       shell: bash
