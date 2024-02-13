@@ -21,7 +21,7 @@ runs:
       run: |
         SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
         EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m)
-        if [ -z "$EXITS" ] then
+        if [ -z "$EXITS" ]; then
           echo "MANUAL_${{ inputs.tag }}=true" >> $GITHUB_OUTPUT
         fi
 
