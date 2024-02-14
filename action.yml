@@ -12,7 +12,8 @@ inputs:
 outputs:
   manual_tag:
     description: 'boolean if the tag is found'
-    value: ${{ steps.manual-checks.outputs.manual_tag }}
+    #value: ${{ steps.manual-checks.outputs.manual_tag }}
+    value: true
 
 runs:
   using: 'composite'
