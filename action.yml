@@ -27,5 +27,7 @@ runs:
         EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m)
         if [ -z "$EXITS" ]; then
           echo "manual_tag=true" >> $GITHUB_OUTPUT
+        else
+          echo "manual_tag=false" >> $GITHUB_OUTPUT
         fi
       shell: bash
