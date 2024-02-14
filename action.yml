@@ -12,10 +12,7 @@ inputs:
 outputs:
   manual_tag:
     description: 'boolean if the tag is found'
-    value: ${{ steps.manual-checks-${{ inputs.tag }}.outputs.manual_tag }}
-
-env:
-  SCRIPTS_DIR: '/home/runner/work/_actions/nn-dma/qms-manual-checks/main/scripts'
+    value: ${{ steps.manual-checks.outputs.manual_tag }}
 
 runs:
   using: 'composite'
@@ -23,11 +20,11 @@ runs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Check for manual tags
-      id: manual-checks-${{ inputs.tag }}
+      id: manual-checks
       run: |
         SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
         EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m)
         if [ -z "$EXITS" ]; then
-          echo "MANUAL_${{ inputs.tag }}=true" >> $GITHUB_OUTPUT
+          echo "manual_tag=true" >> $GITHUB_OUTPUT
         fi
       shell: bash
