@@ -25,18 +25,35 @@ root_command() {
   # if manual is set, find all files in path that contain the tags and manual
   # return the list of files
 
+  function find_sha {
+    local sha_id=$(git tag -l 'release#*' | sort -V | tail -n 1 |xargs git rev-list -n 1)
+    echo $sha_id
+  }
+
   function find_files {
     local path=$1
     local tags=$2
     local manual=$3
-    local files=$(find $path -name "*.feature" -exec grep -l "$tags" {} \;)
-    if [ $manual -eq 1 ]; then
-      local manual_files=$(find $path -name "*.feature" -exec grep -l "manual" {} \;)
-      files=$(comm -12 <(echo "$files" | sort) <(echo "$manual_files" | sort))
+
+    local files_since_sha=$(git diff --name-only $(find_sha) HEAD -- $path)
+    if [ -n "$files_since_sha" ]; then
+      if [ $manual -eq 1 ]; then
+        local manual_files=$(echo "$files_since_sha" | xargs grep -l "manual")
+        files_since_sha=$(comm -12 <(echo "$files_since_sha" | sort) <(echo "$manual_files" | sort))
+      fi
     fi
-    echo "$files"
+
+    echo "$files_since_sha"
+
+    # local files=$(find $path -name "*.feature" -exec grep -l "$tags" {} \;)
+    # if [ $manual -eq 1 ]; then
+    #  local manual_files=$(find $path -name "*.feature" -exec grep -l "manual" {} \;)
+    #  files=$(comm -12 <(echo "$files" | sort) <(echo "$manual_files" | sort))
+    # fi
+    #  echo "$files"
   }
 
+  # if cmd is check, find all files in path that contain the tags
   files=$(find_files $path "$tags" $manual)
   echo "$files"
 
