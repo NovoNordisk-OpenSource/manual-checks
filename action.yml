@@ -27,7 +27,7 @@ runs:
         echo "feature_files_dir: ${{ inputs.feature_files_dir }}"
         echo "tag: ${{ inputs.tag }}"
         SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
-        echo $(bash $SCRIPTS_DIR/qms-scripts last-hash)
+        echo $(bash $SCRIPTS_DIR/qms-scripts last-sha)
       shell: bash
     - name: Check for manual tags
       id: manual-checks
