@@ -19,6 +19,12 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v4
+    - name: debug
+      run: |
+        echo "feature_files_dir: ${{ inputs.feature_files_dir }}"
+        echo "tag: ${{ inputs.tag }}"
+        echo $(bash $SCRIPTS_DIR/qms-scripts last-hash)
+      shell: bash
     - name: Check for manual tags
       id: manual-checks
       run: |

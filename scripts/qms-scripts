@@ -9,55 +9,6 @@ if [[ "${BASH_VERSINFO:-0}" -lt 4 ]]; then
 fi
 
 # :command.master_script
-# :command.root_command
-root_command() {
-  # src/root_command.sh
-  cmd=${args[check]}
-  path=${args[--path]}
-  tags=${args[--tags]}
-  manual=${args[--manual]:-0}
-
-  # path is a directory containing feature files
-  # tags is a string of tags separated by a comma
-  # manual is a boolean
-
-  # find all files in path that contain the tags
-  # if manual is set, find all files in path that contain the tags and manual
-  # return the list of files
-
-  function find_sha {
-    local sha_id=$(git tag -l 'release#*' | sort -V | tail -n 1 | xargs git rev-list -n 1)
-    echo $sha_id
-  }
-
-  function find_files {
-    local path=$1
-    local tags=$2
-    local manual=$3
-
-    local files_since_sha=$(git diff --name-only $(find_sha) HEAD -- $path)
-    if [ -n "$files_since_sha" ]; then
-      if [ $manual -eq 1 ]; then
-        local manual_files=$(echo "$files_since_sha" | xargs grep -l "manual")
-        files_since_sha=$(comm -12 <(echo "$files_since_sha" | sort) <(echo "$manual_files" | sort))
-      fi
-    fi
-
-    echo "$files_since_sha"
-
-    # local files=$(find $path -name "*.feature" -exec grep -l "$tags" {} \;)
-    # if [ $manual -eq 1 ]; then
-    #  local manual_files=$(find $path -name "*.feature" -exec grep -l "manual" {} \;)
-    #  files=$(comm -12 <(echo "$files" | sort) <(echo "$manual_files" | sort))
-    # fi
-    #  echo "$files"
-  }
-
-  # if cmd is check, find all files in path that contain the tags
-  files=$(find_files $path "$tags" $manual)
-  echo "$files"
-
-}
 
 # :command.version_command
 version_command() {
@@ -77,9 +28,52 @@ qms_scripts_usage() {
   fi
 
   printf "%s\n" "Usage:"
-  printf "  qms-scripts CHECK [TARGET] [OPTIONS]\n"
-  printf "  qms-scripts --help | -h\n"
+  printf "  qms-scripts COMMAND\n"
+  printf "  qms-scripts [COMMAND] --help | -h\n"
   printf "  qms-scripts --version | -v\n"
+  echo
+  # :command.usage_commands
+  printf "%s\n" "Commands:"
+  printf "  %s   \n" "check   "
+  printf "  %s   Get the last commit sha\n" "last-sha"
+  echo
+
+  # :command.long_usage
+  if [[ -n $long_usage ]]; then
+    printf "%s\n" "Options:"
+
+    # :command.usage_fixed_flags
+    printf "  %s\n" "--help, -h"
+    printf "    Show this help\n"
+    echo
+    printf "  %s\n" "--version, -v"
+    printf "    Show version number\n"
+    echo
+
+    # :command.usage_examples
+    printf "%s\n" "Examples:"
+    printf "  ./qms-scripts --path /path/to/features --tags @IV\n"
+    printf "  ./qms-scripts --path /path/to/features --tags @IV\n"
+    echo
+
+  fi
+}
+
+# :command.usage
+qms_scripts_check_usage() {
+  if [[ -n $long_usage ]]; then
+    printf "qms-scripts check\n"
+    echo
+
+  else
+    printf "qms-scripts check\n"
+    echo
+
+  fi
+
+  printf "%s\n" "Usage:"
+  printf "  qms-scripts check [OPTIONS]\n"
+  printf "  qms-scripts check --help | -h\n"
   echo
 
   # :command.long_usage
@@ -106,27 +100,34 @@ qms_scripts_usage() {
     printf "  %s\n" "--help, -h"
     printf "    Show this help\n"
     echo
-    printf "  %s\n" "--version, -v"
-    printf "    Show version number\n"
+
+  fi
+}
+
+# :command.usage
+qms_scripts_last_sha_usage() {
+  if [[ -n $long_usage ]]; then
+    printf "qms-scripts last-sha - Get the last commit sha\n"
     echo
 
-    # :command.usage_args
-    printf "%s\n" "Arguments:"
-
-    # :argument.usage
-    printf "  %s\n" "CHECK"
-    printf "    URL to download from\n"
+  else
+    printf "qms-scripts last-sha - Get the last commit sha\n"
     echo
 
-    # :argument.usage
-    printf "  %s\n" "TARGET"
-    printf "    Target filename (default: same as source)\n"
-    echo
+  fi
 
-    # :command.usage_examples
-    printf "%s\n" "Examples:"
-    printf "  ./qms-scripts --path /path/to/features --tags @IV\n"
-    printf "  ./qms-scripts --path /path/to/features --tags @IV\n"
+  printf "%s\n" "Usage:"
+  printf "  qms-scripts last-sha\n"
+  printf "  qms-scripts last-sha --help | -h\n"
+  echo
+
+  # :command.long_usage
+  if [[ -n $long_usage ]]; then
+    printf "%s\n" "Options:"
+
+    # :command.usage_fixed_flags
+    printf "  %s\n" "--help, -h"
+    printf "    Show this help\n"
     echo
 
   fi
@@ -185,6 +186,67 @@ inspect_args() {
 }
 
 # :command.command_functions
+# :command.function
+qms_scripts_check_command() {
+  # src/check_command.sh
+
+  path=${args[--path]}
+  tags=${args[--tags]}
+  manual=${args[--manual]:-0}
+
+  # path is a directory containing feature files
+  # tags is a string of tags separated by a comma
+  # manual is a boolean
+
+  # find all files in path that contain the tags
+  # if manual is set, find all files in path that contain the tags and manual
+  # return the list of files
+
+  function find_sha {
+    local sha_id=$(git tag -l 'release#*' | sort -V | tail -n 1 |xargs git rev-list -n 1)
+    echo $sha_id
+  }
+
+  function find_files {
+    local path=$1
+    local tags=$2
+    local manual=$3
+
+    local files_since_sha=$(git diff --name-only $(find_sha) HEAD -- $path)
+    if [ -n "$files_since_sha" ]; then
+      if [ $manual -eq 1 ]; then
+        local manual_files=$(echo "$files_since_sha" | xargs grep -l "manual")
+        files_since_sha=$(comm -12 <(echo "$files_since_sha" | sort) <(echo "$manual_files" | sort))
+      fi
+    fi
+
+    echo "$files_since_sha"
+
+    # local files=$(find $path -name "*.feature" -exec grep -l "$tags" {} \;)
+    # if [ $manual -eq 1 ]; then
+    #  local manual_files=$(find $path -name "*.feature" -exec grep -l "manual" {} \;)
+    #  files=$(comm -12 <(echo "$files" | sort) <(echo "$manual_files" | sort))
+    # fi
+    #  echo "$files"
+  }
+
+  # if cmd is check, find all files in path that contain the tags
+  files=$(find_files $path "$tags" $manual)
+  echo "$files"
+
+}
+
+# :command.function
+qms_scripts_last_sha_command() {
+  # src/last_sha_command.sh
+  function find_sha {
+    local sha_id=$(git tag -l 'release#*' | sort -V | tail -n 1 |xargs git rev-list -n 1)
+    echo $sha_id
+  }
+
+  echo $(find_sha)
+
+}
 
 # :command.parse_requirements
 parse_requirements() {
@@ -210,7 +272,81 @@ parse_requirements() {
   done
 
   # :command.command_filter
-  action="root"
+  action=${1:-}
+
+  case $action in
+    -*) ;;
+
+    check)
+      action="check"
+      shift
+      qms_scripts_check_parse_requirements "$@"
+      shift $#
+      ;;
+
+    last-sha)
+      action="last-sha"
+      shift
+      qms_scripts_last_sha_parse_requirements "$@"
+      shift $#
+      ;;
+
+    # :command.command_fallback
+    "")
+      qms_scripts_usage >&2
+      exit 1
+      ;;
+
+    *)
+      printf "invalid command: %s\n" "$action" >&2
+      exit 1
+      ;;
+
+  esac
+
+  # :command.parse_requirements_while
+  while [[ $# -gt 0 ]]; do
+    key="$1"
+    case "$key" in
+
+      -?*)
+        printf "invalid option: %s\n" "$key" >&2
+        exit 1
+        ;;
+
+      *)
+        # :command.parse_requirements_case
+        # :command.parse_requirements_case_simple
+        printf "invalid argument: %s\n" "$key" >&2
+        exit 1
+
+        ;;
+
+    esac
+  done
+
+}
+
+# :command.parse_requirements
+qms_scripts_check_parse_requirements() {
+  # :command.fixed_flags_filter
+  while [[ $# -gt 0 ]]; do
+    case "${1:-}" in
+      --help | -h)
+        long_usage=yes
+        qms_scripts_check_usage
+        exit
+        ;;
+
+      *)
+        break
+        ;;
+
+    esac
+  done
+
+  # :command.command_filter
+  action="check"
 
   # :command.parse_requirements_while
   while [[ $# -gt 0 ]]; do
@@ -262,29 +398,13 @@ parse_requirements() {
       *)
         # :command.parse_requirements_case
         # :command.parse_requirements_case_simple
-        if [[ -z ${args['check']+x} ]]; then
-
-          args['check']=$1
-          shift
-        elif [[ -z ${args['target']+x} ]]; then
-
-          args['target']=$1
-          shift
-        else
-          printf "invalid argument: %s\n" "$key" >&2
-          exit 1
-        fi
+        printf "invalid argument: %s\n" "$key" >&2
+        exit 1
 
         ;;
 
     esac
   done
-
-  # :command.required_args_filter
-  if [[ -z ${args['check']+x} ]]; then
-    printf "missing required argument: CHECK\nusage: qms-scripts CHECK [TARGET] [OPTIONS]\n" >&2
-    exit 1
-  fi
 
   # :command.required_flags_filter
   if [[ -z ${args['--path']+x} ]]; then
@@ -295,6 +415,50 @@ parse_requirements() {
     printf "missing required flag: --tags, -t TAGS\n" >&2
     exit 1
   fi
+
+}
+
+# :command.parse_requirements
+qms_scripts_last_sha_parse_requirements() {
+  # :command.fixed_flags_filter
+  while [[ $# -gt 0 ]]; do
+    case "${1:-}" in
+      --help | -h)
+        long_usage=yes
+        qms_scripts_last_sha_usage
+        exit
+        ;;
+
+      *)
+        break
+        ;;
+
+    esac
+  done
+
+  # :command.command_filter
+  action="last-sha"
+
+  # :command.parse_requirements_while
+  while [[ $# -gt 0 ]]; do
+    key="$1"
+    case "$key" in
+
+      -?*)
+        printf "invalid option: %s\n" "$key" >&2
+        exit 1
+        ;;
+
+      *)
+        # :command.parse_requirements_case
+        # :command.parse_requirements_case_simple
+        printf "invalid argument: %s\n" "$key" >&2
+        exit 1
+
+        ;;
+
+    esac
+  done
 
 }
 
@@ -316,7 +480,8 @@ run() {
   parse_requirements "${input[@]}"
 
   case "$action" in
-    "root") root_command ;;
+    "check") qms_scripts_check_command ;;
+    "last-sha") qms_scripts_last_sha_command ;;
   esac
 }
 
