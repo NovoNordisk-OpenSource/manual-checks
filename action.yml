@@ -19,7 +19,7 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v4
-      fetch-depth: 0
+      fetch-tags: true
 
     - name: debug
       run: |
