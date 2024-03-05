@@ -10,48 +10,27 @@ inputs:
     required: true
 
 outputs:
-  manual_tag:
+  manual_pv:
     description: 'boolean if the tag is found'
-    value: ${{ steps.manual-checks.outputs.manual_tag }}
+    value: ${{ steps.manual-checks.outputs.manual_pv }}
+  manual_iv:
+    description: 'boolean if the tag is found'
+    value: ${{ steps.manual-checks.outputs.manual_iv }}
 
 runs:
   using: 'composite'
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-tags: true
-        fetch-depth: 0
-
-    - name: debug
-      run: |
-        echo "feature_files_dir: ${{ inputs.feature_files_dir }}"
-        echo "tag: ${{ inputs.tag }}"
-        SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
-        # echo $(bash $SCRIPTS_DIR/qms-scripts last-sha)
-        git tag -l "release#*" | sort -V | tail -n 1
-        echo "***"
-        git tag -l "release#*" | sort -V
-
-      shell: bash
-
-    - name: Latest SHA
-      id: latest-sha
-      run: |
-        SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
-        # echo "latest_sha=$(bash $SCRIPTS_DIR/qms-scripts last-sha)" >> $GITHUB_OUTPUT
-      shell: bash
-
     - name: Check for manual tags
       id: manual-checks
+      env:
+        TAG: ${{ inputs.tag }}
       run: |
         echo "Checking for manual tags"
-        # git diff --name-only ${{ steps.latest-sha.outputs.latest_sha }} HEAD
-        # SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
-        # EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m)
-        # if [ -z "$EXITS" ]; then
-        #   echo "manual_tag=true" >> $GITHUB_OUTPUT
-        # else
-        #  echo "manual_tag=false" >> $GITHUB_OUTPUT
-        # fi
+        SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
+        EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t $TAG -m)
+        if [ -z "$EXITS" ]; then
+           echo "manual_${TAG}=false" >> $GITHUB_OUTPUT
+        else
+          echo "manual_${TAG}=true" >> $GITHUB_OUTPUT
+        fi
       shell: bash
