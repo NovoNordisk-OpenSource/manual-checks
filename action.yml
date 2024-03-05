@@ -27,21 +27,25 @@ runs:
         echo "feature_files_dir: ${{ inputs.feature_files_dir }}"
         echo "tag: ${{ inputs.tag }}"
         SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
-        echo $(bash $SCRIPTS_DIR/qms-scripts last-sha)
+        # echo $(bash $SCRIPTS_DIR/qms-scripts last-sha)
+        git tag -l "release#*" | sort -V | tail -n 1
+        echo "***"
+        git tag -l "release#*" | sort -V
+
       shell: bash
 
     - name: Latest SHA
       id: latest-sha
       run: |
         SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
-        echo "latest_sha=$(bash $SCRIPTS_DIR/qms-scripts last-sha)" >> $GITHUB_OUTPUT
+        # echo "latest_sha=$(bash $SCRIPTS_DIR/qms-scripts last-sha)" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Check for manual tags
       id: manual-checks
       run: |
         echo "Checking for manual tags"
-        git diff --name-only ${{ steps.latest-sha.outputs.latest_sha }} HEAD
+        # git diff --name-only ${{ steps.latest-sha.outputs.latest_sha }} HEAD
         # SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
         # EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m)
         # if [ -z "$EXITS" ]; then
