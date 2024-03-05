@@ -12,10 +12,10 @@ inputs:
 outputs:
   manual_pv:
     description: 'boolean if the tag is found'
-    value: ${{ steps.manual-checks.outputs.manual_pv }}
+    value: ${{ steps.manual-checks.outputs.manual_PV }}
   manual_iv:
     description: 'boolean if the tag is found'
-    value: ${{ steps.manual-checks.outputs.manual_iv }}
+    value: ${{ steps.manual-checks.outputs.manual_IV }}
 
 runs:
   using: 'composite'
