@@ -28,9 +28,11 @@ runs:
         echo "Checking for manual tags"
         SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
         EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t $TAG -m)
+        OUPUT_NAMESPACE='manual_${TAG}'
+        echo "$OUPUT_NAMESPACE"
         if [ -z "$EXITS" ]; then
-           echo "manual_${TAG}=false" >> $GITHUB_OUTPUT
+          echo "${OUPUT_NAMESPACE}=false" >> $GITHUB_OUTPUT
         else
-          echo "manual_${TAG}=true" >> $GITHUB_OUTPUT
+          echo "${OUPUT_NAMESPACE}=true" >> $GITHUB_OUTPUT
         fi
       shell: bash
