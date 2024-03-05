@@ -22,13 +22,11 @@ runs:
   steps:
     - name: Check for manual tags
       id: manual-checks
-      env:
-        TAG: ${{ inputs.tag }}
       run: |
         echo "Checking for manual tags"
         SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
-        EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t $TAG -m)
-        OUPUT_NAMESPACE='manual_${TAG}'
+        EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m)
+        OUPUT_NAMESPACE='manual_${{ inputs.tag }}'
         echo "$OUPUT_NAMESPACE"
         if [ -z "$EXITS" ]; then
           echo "${OUPUT_NAMESPACE}=false" >> $GITHUB_OUTPUT
