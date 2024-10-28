@@ -203,7 +203,7 @@ qms_scripts_check_command() {
   # return the list of files
 
   function find_sha {
-    local sha_id=$(git tag -l 'release#*' | sort -V | tail -n 1 |xargs git rev-list -n 1)
+    local sha_id=$(git rev-list -n 1 $(git describe --tags --match "release#*" --abbrev=0 --tags $(git rev-list --tags --max-count=1)))
     echo $sha_id
   }
 
@@ -240,7 +240,8 @@ qms_scripts_check_command() {
 qms_scripts_last_sha_command() {
   # src/last_sha_command.sh
   function find_sha {
-    local sha_id=$(git tag -l 'release#*' | sort -V | tail -n 1 |xargs git rev-list -n 1)
+    #local sha_id=$(git tag -l 'release#*' | sort -V | tail -n 1 |xargs git rev-list -n 1)
+    local sha_id=$(git rev-list -n 1 $(git describe --tags --match "release#*" --abbrev=0 --tags $(git rev-list --tags --max-count=1)))
     echo $sha_id
   }
 
