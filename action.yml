@@ -24,7 +24,7 @@ runs:
       id: manual-checks
       run: |
         echo "Checking for manual tags"
-        SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/main/scripts'
+        SCRIPTS_DIR='/home/runner/work/_actions/nn-dma/manual-checks/scripts'
         EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m)
         OUPUT_NAMESPACE='manual_${{ inputs.tag }}'
         echo "$OUPUT_NAMESPACE"
