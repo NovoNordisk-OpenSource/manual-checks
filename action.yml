@@ -27,8 +27,8 @@ runs:
         echo "AAAAA"
         ls /home/runner/work/_actions
         echo "AAAAA"
-        ls /home/runner/work/_actions/NovoNordisk-OpenSource/manual-checks
-        SCRIPTS_DIR='/home/runner/work/_actions/NovoNordisk-OpenSource/manual-checks/main/scripts'
+        ls /home/runner/work/_actions/NovoNordisk-OpenSource/manual-checks/v1.0.0
+        SCRIPTS_DIR='/home/runner/work/_actions/NovoNordisk-OpenSource/manual-checks/v1.0.0/scripts'
         EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m)
         OUPUT_NAMESPACE='manual_${{ inputs.tag }}'
         echo "$OUPUT_NAMESPACE"
