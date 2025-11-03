@@ -11,7 +11,7 @@ inputs:
   repo_tag:
     description: 'Giving the option to specify another version of the manual-checks repo or a GitHub SHA.'
     required: false
-    default: 'v1.0.0'
+    default: 'v1.0.2'
 
 outputs:
   manual_pv:
@@ -28,7 +28,7 @@ runs:
       id: manual-checks
       run: |
         echo "Checking for manual tags"
-        SCRIPTS_DIR='/home/runner/work/_actions/NovoNordisk-OpenSource/manual-checks/latest/scripts'
+        SCRIPTS_DIR='/home/runner/work/_actions/NovoNordisk-OpenSource/manual-checks/${{ inputs.repo_tag  }}/scripts'
         EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m)
         OUTPUT_NAMESPACE='manual_${{ inputs.tag }}'
         echo "$OUTPUT_NAMESPACE"
