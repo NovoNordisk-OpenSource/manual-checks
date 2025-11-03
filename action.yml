@@ -8,6 +8,10 @@ inputs:
   tag:
     description: 'Tag to check for'
     required: true
+  repo_tag:
+    description: 'Giving the option to specify another version of the manual-checks repo or a GitHub SHA.'
+    required: false
+    default: 'v1.0.0'
 
 outputs:
   manual_pv:
@@ -24,13 +28,13 @@ runs:
       id: manual-checks
       run: |
         echo "Checking for manual tags"
-        SCRIPTS_DIR='/home/runner/work/_actions/NovoNordisk-OpenSource/manual-checks/v1.0.0/scripts'
+        SCRIPTS_DIR='/home/runner/work/_actions/NovoNordisk-OpenSource/manual-checks/${{ inputs.repo_tag }}/scripts'
         EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m)
-        OUPUT_NAMESPACE='manual_${{ inputs.tag }}'
-        echo "$OUPUT_NAMESPACE"
+        OUTPUT_NAMESPACE='manual_${{ inputs.tag }}'
+        echo "$OUTPUT_NAMESPACE"
         if [ -z "$EXITS" ]; then
-          echo "${OUPUT_NAMESPACE}=false" >> $GITHUB_OUTPUT
+          echo "${OUTPUT_NAMESPACE}=false" >> $GITHUB_OUTPUT
         else
-          echo "${OUPUT_NAMESPACE}=true" >> $GITHUB_OUTPUT
+          echo "${OUTPUT_NAMESPACE}=true" >> $GITHUB_OUTPUT
         fi
       shell: bash
