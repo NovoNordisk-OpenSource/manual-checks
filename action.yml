@@ -28,6 +28,7 @@ runs:
       id: manual-checks
       run: |
         echo "Checking for manual tags"
+        ls /home/runner/work/_actions/NovoNordisk-OpenSource/manual-checks/
         SCRIPTS_DIR='/home/runner/work/_actions/NovoNordisk-OpenSource/manual-checks/${{ inputs.repo_tag  }}/scripts'
         EXITS=$(bash $SCRIPTS_DIR/qms-scripts check -p ${{ inputs.feature_files_dir }} -t ${{ inputs.tag }} -m)
         OUTPUT_NAMESPACE='manual_${{ inputs.tag }}'
